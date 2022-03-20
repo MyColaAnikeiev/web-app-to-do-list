@@ -1,0 +1,16 @@
+$site-width: 1000px;
+
+:host{
+    display: block;
+}
+
+.site-wrapper{
+    display: grid;
+    max-width: $site-width;
+    margin: 0 auto;
+    grid-template: 
+        [header-start] "header header" minmax(80px,auto) [header-end]
+        [main-start] "switcher schedule-list" [main-end]
+        / 100px 1fr;
+}
+

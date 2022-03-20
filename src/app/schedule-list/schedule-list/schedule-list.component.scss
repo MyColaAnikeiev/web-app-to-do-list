@@ -1,0 +1,56 @@
+@import url(../../share/styles/inputs.scss);
+@import '../../share/styles/color-scheme.scss';
+
+.app-schedule-list{
+    grid-area: schedule-list;
+    padding: 10px 8px;
+    margin-left: 10px;
+    margin-top: 20px;
+    background-image: linear-gradient($bg-primary 10px, $bg-secondary 200px);
+    border: 1px solid $border-primary;
+
+
+    .top{
+        margin-bottom: 15px;
+    }
+    
+    
+    .record{
+        display: grid;
+        grid-template: "time text close-btn" 32px / 80px 1fr 32px ;
+        grid-gap: 1px;
+        gap: 1px;
+    
+        //box-sizing: border-box;
+    
+    
+        &-delete-btn{
+            border: 1px solid #e39c9c;
+            border-radius: 4px;
+            background-color: rgb(209, 133, 133);
+            text-align: center;
+            cursor: pointer;
+    
+            span{
+                position: relative;
+                top: 5px;
+                left: 0px;
+                color:#974c4c;
+            }
+        }
+    
+        input{
+            box-sizing: border-box;
+            width: 100%;
+            background-color: rgb(240, 240, 240);
+            color: rgb(53, 53, 53);
+    
+            &:focus{
+                outline: none;
+                background-color: white;
+                color: black;
+            }
+        }
+    }
+        
+}

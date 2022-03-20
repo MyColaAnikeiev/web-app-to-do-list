@@ -1,0 +1,29 @@
+.clear{
+    clear: both;
+}
+
+.timer{
+    width: 90px;
+    float: right;
+    background-color: #a8a0a0;
+    padding: 3px;
+    border-radius: 0 5px 5px 5px;
+
+    &-inner{
+        background-color: #828080;
+        border: 2px solid #b4b7a1;
+        text-align: center;
+        font-size: 17px;
+        color:#bfbfbf;
+    }
+
+    &-off{
+        background-color: transparent;
+
+        .timer-inner{
+            border-color: transparent;
+            background-color: #b6b4b4;
+            color: #cccccc;
+        }
+    }
+}

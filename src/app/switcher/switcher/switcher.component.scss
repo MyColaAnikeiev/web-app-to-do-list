@@ -1,0 +1,32 @@
+@import '../../share/styles/color-scheme.scss';
+
+:host{
+    grid-area: switcher;
+    margin-top: 20px;
+    padding: 15px 8px;
+
+    background-image: linear-gradient($bg-primary 23px, $bg-secondary 166px);
+    border: 1px solid $border-primary;
+    font-family: 'Courier New', Courier, monospace;
+
+}
+
+.title{
+    border: 1px solid #c1c1c1;
+    border-radius: 4px 0;
+    padding: 5px;
+    background-color: #cecece;
+    color: #6f6b6b;
+}
+
+.day{
+    margin-top: 10px;
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 4px 8px;
+
+    &.selected{
+        background-color: #8f978a;
+        color: #fff;
+    }
+}

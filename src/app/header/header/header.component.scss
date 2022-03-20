@@ -1,0 +1,32 @@
+:host{
+    grid-area: header;
+    background-image: linear-gradient(#e3ded1 21px, #0000 72px);
+    border-top: 1px solid #dfd2d2;
+    border-bottom: 1px solid #ecebe5;
+}
+
+
+.logo{
+    display: grid;
+
+    grid-template: 
+        "empty image title" minmax(80px,auto)
+        / 40px 100px 1fr;
+
+
+    &-image{
+        width: 46px;
+        grid-area: image;
+        align-self: center;
+        justify-self: center;
+    }
+
+    &-title{
+        grid-area: title;
+        align-self: center;
+
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 32px;
+        color: #b0a9a9;
+    }
+}
