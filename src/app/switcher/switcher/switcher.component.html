@@ -2,31 +2,10 @@
     <span>Days:</span>
 </div>
 
-<div class="day">
-    mon
+<div *ngFor="let val of buttonValues; let i = index" 
+    class="day"
+    [ngClass]="{ 'selected' : val.day == currentDay }"
+    (click)="selectDay(i)"
+>
+    {{ val.day }}
 </div>
-
-<div class="day">
-    tue
-</div>
-
-<div class="day selected">
-    wed
-</div>
-
-<div class="day">
-    thu
-</div>
-
-<div class="day">
-    Fri
-</div>
-
-<div class="day">
-    Sat
-</div>
-
-<div class="day">
-    Sun
-</div>
-
