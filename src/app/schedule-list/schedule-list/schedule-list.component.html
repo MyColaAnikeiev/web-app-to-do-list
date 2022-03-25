@@ -3,19 +3,41 @@
     <app-time-indicator [on]="clockStateOn"></app-time-indicator>
 </div>
 
-<form>
-    
-    <div class="record">
-        <div class="record-time">
-            <app-time-input ></app-time-input>
+<form [formGroup]="recordsGroup">
+
+    <div formArrayName="records" class="records">
+        <div class="record"
+            *ngFor="let recordMod of recordsStates; let i=index"
+            formGroupName="{{i}}"
+            [ngStyle]="{'grid-row': recordMod.position}"
+            appListShafleAnimation
+            [gridRow]="recordMod.position"
+        >
+            <div class="record-time">
+                <app-time-input formControlName="time"></app-time-input>
+            </div>
+            <div class="record-text">
+                <input formControlName="text" type="text">
+            </div>
+            <div class="record-delete-btn" (click)="deleteRecord(recordMod.id)">
+                <span>X</span>
+            </div>
         </div>
-        <div class="record-text">
-            <input type="text">
-        </div>
-        <div class="record-delete-btn">
-            <span>X</span>
+
+        <div class="record record-adder"
+            [ngStyle]="{'grid-row': recordsStates.length+1}"
+            appListShafleAnimation
+            [gridRow]="recordsStates.length+1"
+            >
+            <div class="record-time">
+                <app-time-input disabled></app-time-input>
+            </div>
+            <div class="record-text">
+                <input disabled type="text">
+            </div>
         </div>
     </div>
+
 
 </form>
 

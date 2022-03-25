@@ -8,6 +8,7 @@ import { ScheduleListComponent } from './schedule-list/schedule-list/schedule-li
 import { TimeIndicatorComponent } from './time-indicator/time-indicator/time-indicator.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TimeInputComponent } from './time-input/time-input.component';
+import { ListShafleAnimationDirective } from './share/directives/list-shafle-animation.directive';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { TimeInputComponent } from './time-input/time-input.component';
     ScheduleListComponent,
     TimeIndicatorComponent,
     TimeInputComponent,
+    ListShafleAnimationDirective
   ],
   imports: [
     BrowserModule,

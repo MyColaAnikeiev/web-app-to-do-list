@@ -14,15 +14,17 @@
         margin-bottom: 15px;
     }
     
+    .records{
+        display: grid;
+        grid-template: auto / 1fr;
+    }
     
     .record{
         display: grid;
         grid-template: "time text close-btn" 32px / 80px 1fr 32px ;
         grid-gap: 1px;
         gap: 1px;
-    
-        //box-sizing: border-box;
-    
+            
     
         &-delete-btn{
             border: 1px solid #e39c9c;
@@ -49,6 +51,16 @@
                 outline: none;
                 background-color: white;
                 color: black;
+            }
+        }
+
+
+        &-adder{
+            input{
+                background-color: rgb(255, 255, 255);
+                border-color: rgb(226, 226, 226);
+                color: rgb(235, 235, 235);
+                cursor: pointer;
             }
         }
     }
