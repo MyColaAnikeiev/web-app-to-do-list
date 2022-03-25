@@ -1,9 +1,9 @@
-import { Component, ElementRef, forwardRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-time-input',
-  template: '<input type="text" #input (input)="valueChange($event)">',
+  template: '<input type="text" #input [disabled]="disabled != undefined" (input)="valueChange($event)">',
   styleUrls: ['./time-input.component.scss'],
   providers : [
     {
@@ -13,7 +13,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     }
   ]
 })
-export class TimeInputComponent implements OnInit, ControlValueAccessor{
+export class TimeInputComponent implements OnInit, AfterViewInit, ControlValueAccessor{
+
+  @Input('disabled') disabled: string | undefined;
 
   @ViewChild('input') inputEl!: ElementRef;
 
@@ -25,6 +27,10 @@ export class TimeInputComponent implements OnInit, ControlValueAccessor{
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
+    this.inputEl.nativeElement.value = this.time;
   }
 
   valueChange(evt_: Event){
@@ -68,7 +74,9 @@ export class TimeInputComponent implements OnInit, ControlValueAccessor{
 
   writeValue(time: any): void {
     this.time = time;
-    this.inputEl.nativeElement.value = time;   
+    if(this.inputEl){
+      this.inputEl.nativeElement.value = time;
+    }   
   }
 
   hrMinFromStr(tm: string){
