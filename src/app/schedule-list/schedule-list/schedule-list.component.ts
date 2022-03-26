@@ -23,6 +23,8 @@ export class ScheduleListComponent implements OnInit {
     records: this.recordsForm
   });
 
+  unsavedIdCount = 0;
+
   constructor(private scheduleServ: ScheduleService) { 
   }
 
@@ -59,7 +61,7 @@ export class ScheduleListComponent implements OnInit {
     debugger
 
     const mod: RecordStateModelI = {
-      id: -1,
+      id: --this.unsavedIdCount,
       position: this.recordsStates.length+1,
       time,
       text: '',
