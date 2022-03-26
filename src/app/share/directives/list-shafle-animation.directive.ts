@@ -19,8 +19,13 @@ export class ListShafleAnimationDirective implements OnInit, OnChanges{
   @Input('gridRow') curRow: number = -1;
 
   @HostBinding('style.position') position = 'relative';
-
   @HostBinding('style.top') top = '0px';
+  @HostBinding('style.zIndex') zindex = '';
+  @HostBinding('style.gridRow') gridRow = '';
+
+  remainedShift = 0;
+
+  animationInterval: undefined | ReturnType<typeof setInterval>;
 
   constructor(private element: ElementRef) {
   }
@@ -31,9 +36,12 @@ export class ListShafleAnimationDirective implements OnInit, OnChanges{
     },0);
   }
 
+  
+
   ngOnChanges(changes: SimpleChanges): void {
 
     if('curRow' in changes){
+      this.gridRow = changes.curRow.currentValue;
 
       if(this.lastRow != -1){
         this.animate(this.lastRow - this.curRow);
@@ -45,20 +53,36 @@ export class ListShafleAnimationDirective implements OnInit, OnChanges{
 
   
   animate(shift: number){
-    const totalSift = this.elHeight * shift;
-    const steps = 10;
-    let step = 1;
-    let intervalID: ReturnType<typeof setInterval> | undefined; 
+    const relativeSift = this.elHeight * shift;
 
+    // When animation is unfinished it will continue to new 
+    // destination from from place it was at a moment.
+    this.remainedShift += relativeSift;
+
+    // This should be set together with style.gridRow before rendering
+    // to avoid flickering.
+    this.top = String(this.remainedShift.toFixed(1)) + 'px';
+
+    // The farther element is going the more it hovering above any other elements
+    this.zindex = String(Math.floor(Math.abs(this.remainedShift))+10);
    
-    intervalID = setInterval(() => {
-      this.top = String((totalSift*(steps-step)/steps).toFixed(1)) + 'px';
-      step++;
+    if(this.animationInterval){
+      clearInterval(this.animationInterval);
+    }
 
-      if(step >= steps){
+    this.animationInterval = setInterval(() => {
+      const step = 5 * Math.sign(this.remainedShift) + 0.08 * this.remainedShift;
+
+      if(Math.abs(step) >= Math.abs(this.remainedShift)){
+        this.remainedShift = 0;
         this.top = '0px';
-        clearInterval(<any>intervalID);
+        clearInterval(<any>this.animationInterval);
+        return;
       }
-    }, 50);
+
+      this.remainedShift -= step;
+
+      this.top = String(this.remainedShift.toFixed(1)) + 'px';
+    }, 33);
   }
 }
