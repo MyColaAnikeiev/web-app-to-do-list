@@ -58,7 +58,6 @@ export class ScheduleListComponent implements OnInit {
    */
   addRecord(focus: 'time' | 'text'){
     const time = this.findVacantTime();
-    debugger
 
     const mod: RecordStateModelI = {
       id: --this.unsavedIdCount,
@@ -98,8 +97,12 @@ export class ScheduleListComponent implements OnInit {
     }
 
     // If there is any records, try to take largest time value and increase it.
-    // recordStates shoud be sorted
-    time.setTime(this.recordsStates[this.recordsStates.length-1].time);
+    // recordsStates itself should'n be sorted
+    const copy = [...this.recordsStates];
+    copy.sort((a,b) => {
+      return a.time.getTotalMinutes() - b.time.getTotalMinutes();
+    })
+    time.setTime(copy[copy.length-1].time);
     let {hr} = time;
     time.addMin(5);
 
