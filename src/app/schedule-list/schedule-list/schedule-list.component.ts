@@ -3,8 +3,8 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { RecordStateModelI } from 'src/app/share/interfaces/schedule.interfaces';
 import { ScheduleService } from 'src/app/share/services/schedule.service';
 import { debounceTime, takeUntil } from 'rxjs/operators'
-import { ToolsService } from 'src/app/share/services/tools.service';
 import { Subject } from 'rxjs';
+import { RecordTime } from 'src/app/share/lib/record-time';
 
 
 @Component({
@@ -23,7 +23,8 @@ export class ScheduleListComponent implements OnInit {
     records: this.recordsForm
   });
 
-  constructor(private scheduleServ: ScheduleService, private tools: ToolsService) { }
+  constructor(private scheduleServ: ScheduleService) { 
+  }
 
   ngOnInit(): void {
 
@@ -31,7 +32,10 @@ export class ScheduleListComponent implements OnInit {
     .subscribe(records => {
       this.clearSchedule();
       this.recordsStates = records.map( (record, index) => {
-        return { ...record, 
+        return {
+          id: record.id,
+          time: new RecordTime(record.time),
+          text: record.text,
           position: index+1, 
           control: null, 
           controlUnsubscriber: new Subject() 
@@ -47,9 +51,37 @@ export class ScheduleListComponent implements OnInit {
   }
 
   /**
-   * For template
+   * Adding new record from template event.
+   * @param focus - on what to focus when added.
    */
-  addRecord(){
+  addRecord(focus: 'time' | 'text'){  
+
+    const mod: RecordStateModelI = {
+      id: -1,
+      position: this.recordsStates.length+1,
+      time: new RecordTime(this.recordsStates.length ? this.recordsStates[this.recordsStates.length-1].time : '00:00'),
+      text: '',
+      control: null,
+      controlUnsubscriber: new Subject()
+    }
+
+    this.recordsStates.push(mod);
+    this.addRecordFromModel(mod);
+
+    setTimeout(() => {
+      const records = document.getElementsByClassName('record-editable');
+      debugger;
+      if(records.length){
+        const lastRecord = records[records.length-1];
+
+        if(focus == 'time'){
+          (lastRecord.querySelector('[formControlName=time] > input') as HTMLInputElement).focus();
+        }else{
+          (lastRecord.querySelector('[formControlName=text]') as HTMLInputElement).focus();
+        }
+
+      }
+    }, 0);
 
   }
 
@@ -94,11 +126,13 @@ export class ScheduleListComponent implements OnInit {
       takeUntil(model.controlUnsubscriber)
     )
     .subscribe((time: string) => {
-      if(model.time == time){
+      if(model.time.toString() == time){
         return;
       }
 
-      model.time = time;
+      
+
+      model.time.setTime(time);
       this.scheduleServ.changeTime(model.id, time);
       this.sortRecords();
     })
@@ -122,7 +156,7 @@ export class ScheduleListComponent implements OnInit {
 
   sortRecords(){
     this.recordsStates.sort((a,b) => {
-      return this.tools.fromTimeStringToMin(a.time) - this.tools.fromTimeStringToMin(b.time)
+      return a.time.getTotalMinutes() - b.time.getTotalMinutes();
     })
 
     this.recordsStates.forEach((mod, ind) => mod.position = ind+1);
