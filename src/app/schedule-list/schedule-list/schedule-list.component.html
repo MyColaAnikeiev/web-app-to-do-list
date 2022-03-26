@@ -6,7 +6,7 @@
 <form [formGroup]="recordsGroup">
 
     <div formArrayName="records" class="records">
-        <div class="record"
+        <div class="record record-editable"
             *ngFor="let recordMod of recordsStates; let i=index"
             formGroupName="{{i}}"
             [ngStyle]="{'grid-row': recordMod.position}"
@@ -24,18 +24,22 @@
             </div>
         </div>
 
+
         <div class="record record-adder"
             [ngStyle]="{'grid-row': recordsStates.length+1}"
             appListShafleAnimation
             [gridRow]="recordsStates.length+1"
-            >
+        >
             <div class="record-time">
+                <div class="click-area" (click)="addRecord('time')"></div>
                 <app-time-input disabled></app-time-input>
             </div>
             <div class="record-text">
-                <input disabled type="text">
+                <div class="click-area" (click)="addRecord('text')"></div>
+                <input type="text">
             </div>
         </div>
+
     </div>
 
 

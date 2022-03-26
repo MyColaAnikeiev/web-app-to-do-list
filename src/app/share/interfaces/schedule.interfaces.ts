@@ -1,5 +1,6 @@
 import { AbstractControl } from "@angular/forms";
 import { Subject } from "rxjs";
+import { RecordTime } from "../lib/record-time";
 
 export interface ScheduleRecord{
     id: number;
@@ -9,7 +10,7 @@ export interface ScheduleRecord{
 
 export interface RecordStateModelI{
     id: number;
-    time: string;
+    time: RecordTime;
     text: string;
     position: number;
     control: AbstractControl | null;
