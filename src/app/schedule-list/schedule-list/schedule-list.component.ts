@@ -54,12 +54,14 @@ export class ScheduleListComponent implements OnInit {
    * Adding new record from template event.
    * @param focus - on what to focus when added.
    */
-  addRecord(focus: 'time' | 'text'){  
+  addRecord(focus: 'time' | 'text'){
+    const time = this.findVacantTime();
+    debugger
 
     const mod: RecordStateModelI = {
       id: -1,
       position: this.recordsStates.length+1,
-      time: new RecordTime(this.recordsStates.length ? this.recordsStates[this.recordsStates.length-1].time : '00:00'),
+      time,
       text: '',
       control: null,
       controlUnsubscriber: new Subject()
@@ -67,10 +69,11 @@ export class ScheduleListComponent implements OnInit {
 
     this.recordsStates.push(mod);
     this.addRecordFromModel(mod);
+    this.sortRecords();
 
     setTimeout(() => {
       const records = document.getElementsByClassName('record-editable');
-      debugger;
+
       if(records.length){
         const lastRecord = records[records.length-1];
 
@@ -85,8 +88,40 @@ export class ScheduleListComponent implements OnInit {
 
   }
 
+  findVacantTime(): RecordTime{
+    const time = new RecordTime('07:00');
+
+    if(this.recordsStates.length == 0){
+      return time;
+    }
+
+    // If there is any records, try to take largest time value and increase it.
+    // recordStates shoud be sorted
+    time.setTime(this.recordsStates[this.recordsStates.length-1].time);
+    let {hr} = time;
+    time.addMin(5);
+
+    // If not overflowing, return it
+    if(time.hr >= hr){
+      return time;
+    }
+
+    // Search beckwards with step value of 1
+    time.setTime('23:59');
+    while(this.checkIfTimeIsUsed(time)){
+      time.addMin(-1);
+    }
+
+    return time;
+  }
+
+  checkIfTimeIsUsed(time: RecordTime): boolean{
+    const tmStr = time.toString();
+    return this.recordsStates.some(mod => mod.time.toString() == tmStr);
+  }
+
   addRecordFromModel(model: RecordStateModelI){
-    const timeControl = new FormControl(model.time);
+    const timeControl = new FormControl(model.time.toString());
     const textControl = new FormControl(model.text);
     const recordGroup = new FormGroup({
       time: timeControl,
@@ -129,9 +164,14 @@ export class ScheduleListComponent implements OnInit {
       if(model.time.toString() == time){
         return;
       }
+      
+      if(this.checkIfTimeIsUsed(new RecordTime(time))){
+        timeControl.setValue(String(model.time));
+        return;
+      }
 
       model.time.setTime(time);
-      // Check if out of range
+      // Check if out of range 
       if(model.time.toString() != time){
         timeControl.setValue(model.time.toString());
       }
@@ -157,10 +197,14 @@ export class ScheduleListComponent implements OnInit {
   }
 
   sortRecords(){
-    this.recordsStates.sort((a,b) => {
+    // this.recordsStates should be syncronized with this.recordsForm array
+    // so we need to copy in before sorting 
+    const copy = [...this.recordsStates];
+
+    copy.sort((a,b) => {
       return a.time.getTotalMinutes() - b.time.getTotalMinutes();
     })
 
-    this.recordsStates.forEach((mod, ind) => mod.position = ind+1);
+    copy.forEach((mod, ind) => mod.position = ind+1);
   }
 }

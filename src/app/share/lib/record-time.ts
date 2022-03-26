@@ -17,7 +17,7 @@ export class RecordTime{
      * On string read failure to will write zeros, and when out of range (00:00-23:59) it 
      * will be croped to it. Also accepts other RecordTime object to create instance from.
      */
-    setTime(time: string | RecordTime){
+    setTime(time: string | RecordTime): void{
         if(typeof time == 'string'){
             this.dateObject = new Date();
 
@@ -40,18 +40,26 @@ export class RecordTime{
         return this.dateObject.toTimeString().slice(0,5);
     }
 
-    addMin(min: number){
+    get hr(): number{
+        return this.dateObject.getHours();
+    }
+
+    get min(): number{
+        return this.dateObject.getMinutes();
+    }
+
+    addMin(min: number): void{
         this.dateObject.setMinutes(this.dateObject.getMinutes() + min);
     }
 
-    addHours(hr: number){
+    addHours(hr: number): void{
         this.dateObject.setHours(this.dateObject.getHours() + hr);
     }
 
     /**
      * Return total minutes counted from 00:00
      */
-    getTotalMinutes(){
+    getTotalMinutes(): number{
         return this.dateObject.getHours()*60 + this.dateObject.getMinutes();
     }
 
