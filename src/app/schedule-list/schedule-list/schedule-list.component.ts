@@ -130,9 +130,11 @@ export class ScheduleListComponent implements OnInit {
         return;
       }
 
-      
-
       model.time.setTime(time);
+      // Check if out of range
+      if(model.time.toString() != time){
+        timeControl.setValue(model.time.toString());
+      }
       this.scheduleServ.changeTime(model.id, time);
       this.sortRecords();
     })
