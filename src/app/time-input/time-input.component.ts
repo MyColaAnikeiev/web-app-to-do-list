@@ -96,7 +96,7 @@ export class TimeInputComponent implements OnInit, AfterViewInit, ControlValueAc
       return false;
     }
 
-    if(h < 0 || m < 0 || h > 23 || m > 59){
+    if(h < 0 || m < 0){
       return false;
     }
 
