@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
     providedIn: 'root'
 })
 /*
- * Service for binding all records and schedule list as a whole
+ * Service to globaly control each ListShafleAnimationDirective instanceses.
  */
 export class ShafleAnimatonBindingService{
     // Used when new instance of ListShafleAnimationDirective is created
