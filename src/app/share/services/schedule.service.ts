@@ -83,6 +83,8 @@ export class ScheduleService implements OnInit{
   }
 
   removeRecord(id: number){
-    this.server.deleteRecord(id);
+    if(id > 0){
+      this.server.deleteRecord(id);
+    }
   }
 }
