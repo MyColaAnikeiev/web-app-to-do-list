@@ -1,5 +1,6 @@
 import { InjectionToken } from "@angular/core";
 
+
 export interface ServerConfigI {
     apiPath: string
 }
@@ -10,5 +11,5 @@ export const SERVER_CONFIG = new InjectionToken<ServerConfigI>('server.config',{
 });
 
 export const SERVER_CONFIG_OBJECT: ServerConfigI = {
-    apiPath: 'http://localhost:3000'
+    apiPath: 'http://' + window.location.hostname  + ':3000'
 }

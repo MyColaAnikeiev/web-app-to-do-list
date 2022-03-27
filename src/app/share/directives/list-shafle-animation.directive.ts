@@ -1,4 +1,5 @@
 import { Directive, ElementRef, HostBinding, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ShafleAnimatonBindingService } from '../services/shafle-animation-binding.service';
 
 
 /**
@@ -15,7 +16,7 @@ export class ListShafleAnimationDirective implements OnInit, OnChanges{
   
   elHeight = 32;
 
-  lastRow = -1;
+  lastRow = 1;
   @Input('gridRow') curRow: number = -1;
 
   @HostBinding('style.position') position = 'relative';
@@ -27,7 +28,8 @@ export class ListShafleAnimationDirective implements OnInit, OnChanges{
 
   animationInterval: undefined | ReturnType<typeof setInterval>;
 
-  constructor(private element: ElementRef) {
+  constructor(private bound: ShafleAnimatonBindingService, private element: ElementRef) {
+    this.lastRow = bound.startingRow;
   }
 
   ngOnInit(): void {
@@ -35,7 +37,6 @@ export class ListShafleAnimationDirective implements OnInit, OnChanges{
       this.elHeight = (this.element.nativeElement as HTMLElement).getBoundingClientRect().height;
     },0);
   }
-
   
 
   ngOnChanges(changes: SimpleChanges): void {

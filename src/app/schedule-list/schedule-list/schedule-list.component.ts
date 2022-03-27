@@ -5,6 +5,7 @@ import { ScheduleService } from 'src/app/share/services/schedule.service';
 import { debounce, takeUntil, tap } from 'rxjs/operators'
 import { interval, merge, Subject, timer } from 'rxjs';
 import { RecordTime } from 'src/app/share/lib/record-time';
+import { ShafleAnimatonBindingService } from 'src/app/share/services/shafle-animation-binding.service';
 
 
 @Component({
@@ -27,8 +28,10 @@ export class ScheduleListComponent implements OnInit {
 
   switchSubject: Subject<any> = new Subject();
 
-  constructor(private scheduleServ: ScheduleService) { 
-  }
+  constructor(
+    private scheduleServ: ScheduleService, 
+    private animationBinding: ShafleAnimatonBindingService
+  ) {}
 
   ngOnInit(): void {
 
@@ -38,6 +41,7 @@ export class ScheduleListComponent implements OnInit {
       tap(() => this.switchSubject.next())
     )
     .subscribe(records => {
+      this.animationBinding.spreadMode();
       this.clearSchedule();
       this.scheduleServ.confirmSwitch();
 
@@ -74,6 +78,7 @@ export class ScheduleListComponent implements OnInit {
    * @param focus - on what to focus when added.
    */
   addRecord(focus: 'time' | 'text'){
+    this.animationBinding.instantMode();
     const time = this.findVacantTime();
 
     const mod: RecordStateModelI = {
