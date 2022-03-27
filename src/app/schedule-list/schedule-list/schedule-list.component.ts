@@ -52,7 +52,9 @@ export class ScheduleListComponent implements OnInit {
         }
       });
 
-      this.recordsStates.forEach(mod => this.addRecordFromModel(mod) )
+      this.recordsStates.forEach(mod => this.addRecordFromModel(mod) );
+
+      this.sortRecords();
     })
 
   }
