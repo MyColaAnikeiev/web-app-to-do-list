@@ -1,5 +1,7 @@
 import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { SwitcherService } from 'src/app/share/services/abstract-switcher.service';
+import { ScheduleService } from 'src/app/share/services/schedule.service';
 
 
 type buttonValue = {day: string, date: string};
@@ -8,18 +10,26 @@ type buttonValue = {day: string, date: string};
 @Component({
   selector: '.app-switcher',
   templateUrl: './switcher.component.html',
-  styleUrls: ['./switcher.component.scss']
+  styleUrls: ['./switcher.component.scss'],
+  providers: [
+    {
+      provide: SwitcherService,
+      useExisting: ScheduleService
+    }
+  ]
 })
 export class SwitcherComponent implements OnInit {  
   public buttonValues: buttonValue[] = [];
   public currentDay = 'Mon';
 
-  constructor() { }
+  constructor(private schedule: SwitcherService) { }
 
   ngOnInit(): void {
     this.currentDay = (new Date()).toDateString().slice(0,3);
-
     this.buttonValues = this.genButtons();
+
+    // Current day
+    this.selectDay(3);
   }
 
   genButtons() : buttonValue[] {
@@ -40,6 +50,7 @@ export class SwitcherComponent implements OnInit {
 
   selectDay(index: number){
     this.currentDay = this.buttonValues[index].day;
+    this.schedule.switchDate(this.buttonValues[index].date);
   }
 
 }

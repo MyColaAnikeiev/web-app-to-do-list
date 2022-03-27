@@ -2,8 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { RecordStateModelI } from 'src/app/share/interfaces/schedule.interfaces';
 import { ScheduleService } from 'src/app/share/services/schedule.service';
-import { debounceTime, takeUntil } from 'rxjs/operators'
-import { Subject } from 'rxjs';
+import { debounce, takeUntil, tap } from 'rxjs/operators'
+import { interval, merge, Subject, timer } from 'rxjs';
 import { RecordTime } from 'src/app/share/lib/record-time';
 
 
@@ -25,14 +25,22 @@ export class ScheduleListComponent implements OnInit {
 
   unsavedIdCount = 0;
 
+  switchSubject: Subject<any> = new Subject();
+
   constructor(private scheduleServ: ScheduleService) { 
   }
 
   ngOnInit(): void {
 
     this.scheduleServ.getRecordsStream()
+    .pipe(
+      // Force debounced changes to finish erlier
+      tap(() => this.switchSubject.next())
+    )
     .subscribe(records => {
       this.clearSchedule();
+      this.scheduleServ.confirmSwitch();
+
       this.recordsStates = records.map( (record, index) => {
         return {
           id: record.id,
@@ -43,13 +51,20 @@ export class ScheduleListComponent implements OnInit {
           controlUnsubscriber: new Subject() 
         }
       });
+
       this.recordsStates.forEach(mod => this.addRecordFromModel(mod) )
     })
 
   }
 
   clearSchedule(){
+    this.recordsStates.forEach(mod => {
+      mod.controlUnsubscriber.next();
+      mod.controlUnsubscriber.complete();
+    });
 
+    this.recordsStates = [];
+    this.recordsForm.clear();
   }
 
   /**
@@ -136,6 +151,7 @@ export class ScheduleListComponent implements OnInit {
     this.recordsForm.push(recordGroup);
 
     this.setupRecordTimeHandler(model,timeControl);
+    this.setupRecordTextHandler(model, textControl);
   }
 
   deleteRecord(id: number){
@@ -162,7 +178,9 @@ export class ScheduleListComponent implements OnInit {
   setupRecordTimeHandler(model: RecordStateModelI, timeControl: FormControl){
     timeControl.valueChanges
     .pipe(
-      debounceTime(1000),
+      debounce(() => {
+        return merge(interval(1000), this.switchSubject);
+      }),
       takeUntil(model.controlUnsubscriber)
     )
     .subscribe((time: string) => {
@@ -188,7 +206,9 @@ export class ScheduleListComponent implements OnInit {
   setupRecordTextHandler(model: RecordStateModelI, textControl: FormControl){
     textControl.valueChanges
     .pipe(
-      debounceTime(5000),
+      debounce(() => {
+        return merge(timer(5000), this.switchSubject);
+      }),
       takeUntil(model.controlUnsubscriber)
     )
     .subscribe(text => {
@@ -197,7 +217,13 @@ export class ScheduleListComponent implements OnInit {
       }
 
       model.text = text;
-      this.scheduleServ.changeText(model.id, text);
+      this.scheduleServ.updateRecord(model.id, model.time.toString(), text)
+        .subscribe(id => {
+          if(id !== null){
+            // Assigned by server
+            model.id = id;
+          }
+        })
     })
   }
 
