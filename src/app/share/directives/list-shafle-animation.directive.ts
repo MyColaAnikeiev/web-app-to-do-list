@@ -26,7 +26,8 @@ export class ListShafleAnimationDirective implements OnInit, OnChanges{
 
   remainedShift = 0;
 
-  animationInterval: undefined | ReturnType<typeof setInterval>;
+  private animationFunction: null | (() => void) = null;
+  
 
   constructor(private bound: ShafleAnimatonBindingService, private element: ElementRef) {
     this.lastRow = bound.startingRow;
@@ -54,6 +55,10 @@ export class ListShafleAnimationDirective implements OnInit, OnChanges{
 
   
   animate(shift: number){
+    if(shift == 0){
+      return;
+    }
+
     const relativeSift = this.elHeight * shift;
 
     // When animation is unfinished it will continue to new 
@@ -66,24 +71,28 @@ export class ListShafleAnimationDirective implements OnInit, OnChanges{
 
     // The farther element is going the more it hovering above any other elements
     this.zindex = String(Math.floor(Math.abs(this.remainedShift))+10);
-   
-    if(this.animationInterval){
-      clearInterval(this.animationInterval);
+
+    if(this.animationFunction){
+      this.bound.unregisterAnimation(this.animationFunction);
+      this.animationFunction = null;
     }
 
-    this.animationInterval = setInterval(() => {
-      const step = 5 * Math.sign(this.remainedShift) + 0.08 * this.remainedShift;
+    this.animationFunction = () => {
+      let step = (5 * Math.sign(this.remainedShift)) + (0.08 * this.remainedShift);
 
       if(Math.abs(step) >= Math.abs(this.remainedShift)){
         this.remainedShift = 0;
         this.top = '0px';
-        clearInterval(<any>this.animationInterval);
+        this.bound.unregisterAnimation(this.animationFunction);
+        this.animationFunction = null;
         return;
       }
 
       this.remainedShift -= step;
 
       this.top = String(this.remainedShift.toFixed(1)) + 'px';
-    }, 33);
+    };
+
+    this.bound.registerAnimation(this.animationFunction);
   }
 }
