@@ -42,11 +42,10 @@ export class ServerService{
      *  Returns assigned id
      */
     postRecord(date: string, time: string, text: string): Observable<number>{
-        return this.http.post(this.config.apiPath + '/records/', 
+        return this.http.post<RecordI>(this.config.apiPath + '/records/', 
             {date, time, text}
         ).pipe(
-            tap(console.log),
-            map(res => 0)
+            map(res => res.id)
         )
     }
 }
