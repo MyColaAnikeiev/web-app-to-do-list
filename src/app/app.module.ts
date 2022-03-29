@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header/header.component';
@@ -10,6 +11,7 @@ import { TimeIndicatorComponent } from './time-indicator/time-indicator/time-ind
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TimeInputComponent } from './time-input/time-input.component';
 import { ListShafleAnimationDirective } from './share/directives/list-shafle-animation.directive';
+import { PopupMessageComponent } from './share/component/popup-message/popup-message.component';
 
 
 @NgModule({
@@ -20,13 +22,15 @@ import { ListShafleAnimationDirective } from './share/directives/list-shafle-ani
     ScheduleListComponent,
     TimeIndicatorComponent,
     TimeInputComponent,
-    ListShafleAnimationDirective
+    ListShafleAnimationDirective,
+    PopupMessageComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

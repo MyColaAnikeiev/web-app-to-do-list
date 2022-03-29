@@ -12,6 +12,7 @@
             [ngStyle]="{'grid-row': recordMod.position}"
             appListShafleAnimation
             [gridRow]="recordMod.position"
+            @recordAppearDisappear
         >
             <div class="record-time">
                 <app-time-input formControlName="time"></app-time-input>

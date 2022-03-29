@@ -2,17 +2,25 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { RecordStateModelI } from 'src/app/share/interfaces/schedule.interfaces';
 import { ScheduleService } from 'src/app/share/services/schedule.service';
-import { debounce, takeUntil, tap } from 'rxjs/operators'
-import { interval, merge, Subject, timer } from 'rxjs';
+import { debounce, delay, delayWhen, takeUntil, tap } from 'rxjs/operators'
+import { interval, merge, of, Subject, timer } from 'rxjs';
 import { RecordTime } from 'src/app/share/lib/record-time';
 import { ShafleAnimatonBindingService } from 'src/app/share/services/shafle-animation-binding.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 
 @Component({
   selector: '.app-schedule-list',
   templateUrl: './schedule-list.component.html',
   styleUrls: ['./schedule-list.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  animations: [
+    trigger('recordAppearDisappear', [
+      state('void', style({ opacity: 0 })),
+      state('shown', style({ opacity: 1 })),
+      transition('void => *', animate('0.4s'))
+    ])
+  ]
 })
 export class ScheduleListComponent implements OnInit {
   clockStateOn = true;
@@ -173,11 +181,10 @@ export class ScheduleListComponent implements OnInit {
       // Request to delete record at server
       this.scheduleServ.removeRecord(id);
 
-      // controls in array could be sorted differently than recordsStates
       const controlIndex = this.recordsForm.controls.findIndex(control => control == model.control);
       this.recordsForm.controls.splice(controlIndex, 1);
       this.recordsStates.splice(recInd, 1);
-      
+
       this.sortRecords();
     }
   }
