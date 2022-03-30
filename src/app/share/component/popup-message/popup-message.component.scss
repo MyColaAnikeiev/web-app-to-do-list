@@ -1,0 +1,52 @@
+.msg{
+
+    &-wrapper{
+        position: fixed;
+        bottom: 20px;
+        left: 10px;
+        width: 280px;
+        height: 150px;
+    }
+
+    &-grid{
+        display: grid;
+        width: 100%;
+        height: 100%;
+        grid-template: auto / 1fr;
+        align-content: start;
+    }
+
+    &-item{
+        margin-bottom: 8px;
+        padding: 8px 15px;
+        border: 1px solid rgb(100, 100, 100);
+        border-radius: 3px;
+        align-self: start;
+
+        p{
+            margin: 4px 5px;
+            color: rgb(100, 100, 100);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;    
+        }
+
+        &.info{
+            background-color: rgba(222, 255, 172, 0.69);
+            border-color: rgba(169, 206, 114, 0.69);
+
+            p{
+                color:rgb(90, 123, 42);
+            }
+        }
+
+        &.warrning{
+            background-color: rgba(255, 172, 172, 0.69);
+            border-color: rgba(206, 114, 114, 0.69);
+
+            p{
+                color:rgb(123, 42, 42);
+            }
+        }
+    }
+
+}

@@ -1,2 +1,14 @@
-<div class="msg-field">
+<div class="msg-wrapper">
+    <div class="msg-grid">
+        <div *ngFor="let msg of displayedMessages; let i = index" 
+            [@popup]="i"
+            class="msg-item" 
+            [ngClass]="msg.type"
+            [ngStyle]="{ gridRow: i+1 }"
+        >
+            <p class="text">
+                {{ msg.text }}
+            </p>
+        </div>
+    </div>
 </div>

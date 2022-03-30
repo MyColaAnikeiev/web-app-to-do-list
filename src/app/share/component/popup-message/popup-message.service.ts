@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { PopupMessage } from "./popup-message.interface";
 
 
@@ -8,8 +8,40 @@ import { PopupMessage } from "./popup-message.interface";
 })
 export class PopupMessageService{
 
+    msgStream = new Subject<PopupMessage>();
+
+    info(text: string){
+        this.msgStream.next({
+            type: 'info',
+            text
+        })
+    }
+
+    warning(text: string){
+        this.msgStream.next({
+            type: 'warrning',
+            text
+        })
+    }
+
     getMessageStream(): Observable<PopupMessage>{
-        return of();
+        const fn = () => {
+            if(Math.random() > 0.5){
+                this.msgStream.next({
+                    type: 'info',
+                    text: 'Saved.'
+                })
+            }else{
+                this.msgStream.next({
+                    type: 'warrning',
+                    text: 'Server error. Check your internet conetcion.'
+                })
+            }
+
+            setTimeout(fn, 400 + 1300);
+        }
+
+        return this.msgStream;
     }
 
 }
