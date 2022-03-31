@@ -25,22 +25,6 @@ export class PopupMessageService{
     }
 
     getMessageStream(): Observable<PopupMessage>{
-        const fn = () => {
-            if(Math.random() > 0.5){
-                this.msgStream.next({
-                    type: 'info',
-                    text: 'Saved.'
-                })
-            }else{
-                this.msgStream.next({
-                    type: 'warrning',
-                    text: 'Server error. Check your internet conetcion.'
-                })
-            }
-
-            setTimeout(fn, 400 + 1300);
-        }
-
         return this.msgStream;
     }
 
