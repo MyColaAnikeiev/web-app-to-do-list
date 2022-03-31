@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { map, tap } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { ServerConfigI, SERVER_CONFIG } from "src/app/app.config";
 import { RecordI } from "../interfaces/server.interface";
 
@@ -23,19 +23,16 @@ export class ServerService{
             );
     }
 
-    deleteRecord(id: number){
-        this.http.delete(this.config.apiPath + '/records/' + String(id))
-            .subscribe();
+    deleteRecord(id: number): Observable<Object>{
+        return this.http.delete(this.config.apiPath + '/records/' + String(id))
     }
 
-    updateRecordTime(id: number, time: string){
-        this.http.patch(this.config.apiPath + '/records/' + String(id), {time})
-            .subscribe();
+    updateRecordTime(id: number, time: string): Observable<Object>{
+        return this.http.patch(this.config.apiPath + '/records/' + String(id), {time})
     }
 
-    updateRecordText(id: number, text: string){
-        this.http.patch(this.config.apiPath + '/records/' + String(id), {text})
-            .subscribe();
+    updateRecordText(id: number, text: string): Observable<Object>{
+        return this.http.patch(this.config.apiPath + '/records/' + String(id), {text})
     }
 
     /*

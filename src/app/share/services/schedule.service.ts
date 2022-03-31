@@ -1,6 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, NEVER, Observable, of, Subject } from 'rxjs';
+import { catchError, filter, tap } from 'rxjs/operators';
+import { PopupMessageService } from '../component/popup-message/popup-message.service';
 import { ScheduleRecord } from '../interfaces/schedule.interfaces';
 import { ServerService } from './server.service';
 
@@ -10,7 +11,6 @@ import { ServerService } from './server.service';
 export class ScheduleService implements OnInit{
 
   private recordStream = new BehaviorSubject<ScheduleRecord[]>([]);
-  //private updateDate
 
   /*
    * On client side unsaved records are assigned negative id. 
@@ -21,7 +21,12 @@ export class ScheduleService implements OnInit{
   selectedDate!: string;
   queuedDate!: string;
 
-  constructor(private server: ServerService) { }
+
+  constructor(
+    private server: ServerService,
+    private message: PopupMessageService
+  ) { }
+
 
   ngOnInit(): void {
   }
@@ -39,6 +44,12 @@ export class ScheduleService implements OnInit{
     }
 
     this.server.getRecordsByDate(date)
+    .pipe(
+      catchError(() => {
+        this.message.warning("Can't get data from a server.");
+        return of<ScheduleRecord[]>([]);
+      })
+    )
     .subscribe(responce => {
       this.recordStream.next(responce);
     })
@@ -50,12 +61,27 @@ export class ScheduleService implements OnInit{
 
   changeTime(id: number, time: string){
     if(id > 0){
-      this.server.updateRecordTime(id, time);
+      this.server.updateRecordTime(id, time)
+      .pipe(
+        catchError(() => {
+          this.message.warning("Connection error.");
+          return of();
+        })
+      )
+      .subscribe();
+
       return;
     }
 
     if(this.idMap.has(id)){
-      this.server.updateRecordTime(<number>this.idMap.get(id), time);
+      this.server.updateRecordTime(<number>this.idMap.get(id), time)
+      .pipe(
+        catchError(() => {
+          this.message.warning("Connection error.");
+          return of();
+        })
+      )
+      .subscribe();
     }
   }
 
@@ -65,14 +91,29 @@ export class ScheduleService implements OnInit{
    */
   updateRecord(id: number, time: string, text: string): Observable<number | null>{
     if(id > 0){
-      this.server.updateRecordText(id, text);
+      this.server.updateRecordText(id, text)
+      .pipe(
+        catchError(() => {
+          this.message.warning("Can't update record because of connection error.");
+          return of()
+        }),
+        tap(() => {
+          this.message.info("Record is updated.")
+        })
+      )
+      .subscribe();
       return of(null);
     }
 
-
     return this.server.postRecord(this.selectedDate, time, text)
       .pipe(
+        catchError( () => {
+          this.message.warning("Can't save record because of connection error.");
+          // Just complete
+          return of<number>()
+        }),
         tap( (serverID: number) => {
+          this.message.info("Saved.");
           this.idMap.set(id, serverID);
           // Clean up
           setTimeout(() => {
@@ -83,8 +124,22 @@ export class ScheduleService implements OnInit{
   }
 
   removeRecord(id: number){
-    if(id > 0){
-      this.server.deleteRecord(id);
+    if(id <= 0){
+      this.message.info("Deleted.");
+      return
     }
+
+    this.server.deleteRecord(id)
+    .pipe(
+      catchError(() => {
+        this.message.warning("Connection error.");
+        return of()
+      }),
+      tap(() => {
+        this.message.info("Deleted.");
+      })
+    )
+    .subscribe();
   }
+
 }
