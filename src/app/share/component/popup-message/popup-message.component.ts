@@ -45,7 +45,7 @@ export class PopupMessageComponent implements OnInit {
         setTimeout(() => {
           const curInd = this.displayedMessages.findIndex(el => el == msg);
           this.displayedMessages.splice(curInd, 1);
-        }, 5000)
+        }, 4000)
       })
   }
   

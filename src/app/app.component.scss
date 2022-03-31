@@ -4,12 +4,18 @@ $site-width: 1000px;
     display: block;
 }
 
+.top-line{
+    width: 100%;
+    height: 12px;
+    background-color: #555;
+}
+
 .site-wrapper{
     display: grid;
     max-width: $site-width;
     margin: 0 auto;
     grid-template: 
-        [header-start] "header header" minmax(80px,auto) [header-end]
+        [header-start] "header header" minmax(65px,auto) [header-end]
         [main-start] "switcher schedule-list" [main-end]
         / 100px 1fr;
 }

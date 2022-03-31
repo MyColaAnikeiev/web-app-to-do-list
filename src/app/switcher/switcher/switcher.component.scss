@@ -4,6 +4,7 @@
     grid-area: switcher;
     margin-top: 20px;
     padding: 15px 8px;
+    align-self: start;
 
     background-image: linear-gradient($bg-primary 23px, $bg-secondary 166px);
     border: 1px solid $border-primary;
