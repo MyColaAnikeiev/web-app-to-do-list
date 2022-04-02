@@ -4,7 +4,6 @@ import { RecordI } from 'src/app/share/interfaces/server.interface'
 import { RequestInfo } from 'angular-in-memory-web-api'
 import { ScheduleStorageService } from '../share/services/schedule-storage.service';
 import { Injectable } from '@angular/core';
-import { InMemDbI } from '../share/interfaces/in-mem-db.interface';
 
 
 @Injectable()
@@ -14,7 +13,7 @@ export class InMemScheduleDbService implements InMemoryDbService{
 
     constructor(private storage: ScheduleStorageService){}
 
-    createDb(): InMemDbI{
+    createDb(){
         this.records = this.storage.getRecords();
 
         return { records: this.records }
@@ -84,12 +83,7 @@ export class InMemScheduleDbService implements InMemoryDbService{
         return null;
     }
 
-    post(req: RequestInfo){
-        if(this.records.length == 0 && req.collectionName == 'records'){
-            console.log(req)
-            req.id = 1;
-        }
-
+    post(){
         this.storage.saveRecords(this.records);
         return null;
     }
