@@ -8,4 +8,6 @@
     (click)="selectDay(i)"
 >
     {{ val.day }}
+    <span class="date">{{ val.date }}</span>
+    <span class="today" *ngIf="i == 3">today</span>
 </div>

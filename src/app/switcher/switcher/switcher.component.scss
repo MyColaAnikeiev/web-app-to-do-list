@@ -21,14 +21,61 @@
 }
 
 .day{
+    position: relative;
+    min-width: 55px;
     margin-top: 10px;
     border: 1px solid gray;
     border-radius: 4px;
     padding: 4px 8px;
     cursor: pointer;
+    transition: background-color 0.5s;
+    transition: color 0.5s;
+
+    &:hover{
+        background-color: #99a194;
+        color: #fff;   
+    }
 
     &.selected{
-        background-color: #8f978a;
+        background-color: #7b8377;
         color: #fff;
+    }
+
+    .today {
+        position: absolute;
+        right: 3px;
+        bottom: 1px;
+        font-size: 8px;
+
+        .date{
+            color: #2a978d;
+        }
+    }
+
+    .date{
+        position: absolute;
+        top: 1px;
+        right: 2px;
+        font-size: 9px;
+    }
+}
+
+
+@media all and (max-width: 700px){
+    :host{
+        display: flex;
+        padding-bottom: 8px;
+        flex-flow: wrap;
+        align-items: baseline;
+        justify-content: flex-start;
+        
+    }
+
+    .title{
+        margin-right: 8px;
+    }
+
+    .day{
+        margin: 0 4px 8px 4px;
     }
 }

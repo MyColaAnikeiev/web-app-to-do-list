@@ -28,6 +28,7 @@
         padding: 4px 0;
     
         &-delete-btn{
+            grid-area: close-btn;
             border: 1px solid #e39c9c;
             border-radius: 4px;
             background-color: rgb(209, 133, 133);
@@ -76,6 +77,75 @@
                 z-index: 10;
             }           
         }
+
+        &-time{
+            grid-area: time;
+        }
+        &-text{
+            grid-area: text;
+        }
+        &-time-icon{
+            display: none;
+        }
+
     }
         
+}
+
+@media all and (max-width: 700px) {
+    .app-schedule-list{
+        margin-left: 0;
+    }
+}
+
+
+
+@media all and (max-width: 600px) {
+    .app-schedule-list{
+        .record{
+            display: grid;
+            grid-template: 
+                "icon time gap close-btn" 32px
+                "text text text text" 32px 
+                / 32px 100px 1fr 86px;
+
+            
+            &-time{
+                input{
+                    //border-color: transparent;
+                    padding: 2px 22px;
+                    border-radius: 4px;
+                }
+            }
+            &-time-icon{
+                display: block;
+                padding: 4px 4px;
+                background-color: #d6f4de;
+                border: 1px solid #85bf9c;
+                border-radius: 14px 1px;
+            }
+
+            &-delete-btn{
+                position: relative;
+                border: 1px solid #714f4f;
+                border-radius: 6px;
+                background-color: #ea6767;
+        
+                span{
+                    display: none;
+                }
+
+                &::before{
+                    position: absolute;
+                    content: "Delete";
+                    top: 5px;
+                    left: 10px;
+                    font-family: 'Courier New', Courier, monospace;
+                    font-size: 18px;
+                    color: #fde1e1;
+                }
+            }
+
+        }
+    }
 }
