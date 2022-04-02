@@ -83,7 +83,11 @@ export class InMemScheduleDbService implements InMemoryDbService{
         return null;
     }
 
-    post(){
+    post(req: RequestInfo){
+        if(this.records.length == 0 && req.collectionName == 'records'){
+            req.id = 1;
+        }
+        
         this.storage.saveRecords(this.records);
         return null;
     }
