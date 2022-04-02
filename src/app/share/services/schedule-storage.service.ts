@@ -1,7 +1,7 @@
 import { formatDate } from "@angular/common";
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
-import { debounceTime } from "rxjs/operators";
+import { merge, Subject, timer } from "rxjs";
+import { debounce, debounceTime } from "rxjs/operators";
 import { RecordI } from "../interfaces/server.interface";
 
 
@@ -10,6 +10,7 @@ import { RecordI } from "../interfaces/server.interface";
 })
 export class ScheduleStorageService{
     private saver!: Subject<RecordI[]>;
+    private exitSubject = new Subject();
 
     getRecords(): RecordI[]{
         try{
@@ -26,7 +27,7 @@ export class ScheduleStorageService{
             this.saver = new Subject();
             
             this.saver.pipe(
-                debounceTime(1000)
+                debounce(() => merge(timer(10000), this.exitSubject))
             )
             .subscribe(records => {
                 localStorage.setItem('records', JSON.stringify(records));
@@ -53,5 +54,11 @@ export class ScheduleStorageService{
         return records.filter(rec => dates.some(date => date == rec.date));
     }
 
-
+    /**
+     * Call when user leaves page.
+     */
+    forceExit(){
+        this.exitSubject.next();
+        this.exitSubject.complete();
+    }
 }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
+import { ScheduleStorageService } from './share/services/schedule-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'dotolist2';
+  
+  constructor(private storage: ScheduleStorageService){}
+
+
+  @HostListener('window:beforeunload') beforeUnload(){
+    this.storage.forceExit();
+  }
+
 }
