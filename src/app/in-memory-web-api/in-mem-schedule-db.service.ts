@@ -1,17 +1,20 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api'
 import { Observable } from 'rxjs';
 import { RecordI } from 'src/app/share/interfaces/server.interface'
-import { dummyRecords } from './dummy.database'
 import { RequestInfo } from 'angular-in-memory-web-api'
+import { ScheduleStorageService } from '../share/services/schedule-storage.service';
+import { Injectable } from '@angular/core';
 
+
+@Injectable()
 export class InMemScheduleDbService implements InMemoryDbService{
 
-    records: RecordI[] = [];
+    private records: RecordI[] = [];
 
-    constructor(){}
+    constructor(private storage: ScheduleStorageService){}
 
     createDb(){
-        this.records = [...dummyRecords];
+        this.records = this.storage.getRecords();
 
         return { records: this.records }
     }
@@ -72,9 +75,21 @@ export class InMemScheduleDbService implements InMemoryDbService{
                 })
             }
 
+            this.storage.saveRecords(this.records);
+
             return req.utils.createResponse$(() => ({status: 200}));
         }
 
+        return null;
+    }
+
+    post(){
+        this.storage.saveRecords(this.records);
+        return null;
+    }
+
+    delete(){
+        this.storage.saveRecords(this.records);
         return null;
     }
 }
