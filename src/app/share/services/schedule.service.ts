@@ -1,8 +1,9 @@
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, NEVER, Observable, of, Subject } from 'rxjs';
-import { catchError, filter, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { PopupMessageService } from '../component/popup-message/popup-message.service';
 import { ScheduleRecord } from '../interfaces/schedule.interfaces';
+import { LoggerService } from './logger.service';
 import { ServerService } from './server.service';
 
 @Injectable({
@@ -23,6 +24,7 @@ export class ScheduleService implements OnInit{
 
 
   constructor(
+    private logger: LoggerService,
     private server: ServerService,
     private message: PopupMessageService
   ) { }
@@ -45,7 +47,8 @@ export class ScheduleService implements OnInit{
 
     this.server.getRecordsByDate(date)
     .pipe(
-      catchError(() => {
+      catchError((err) => {
+        this.logger.err(err);
         this.message.warning("Can't get data from a server.");
         return of<ScheduleRecord[]>([]);
       })
@@ -63,7 +66,8 @@ export class ScheduleService implements OnInit{
     if(id > 0){
       this.server.updateRecordTime(id, time)
       .pipe(
-        catchError(() => {
+        catchError((err) => {
+          this.logger.err(err);
           this.message.warning("Connection error.");
           return of();
         })
@@ -76,7 +80,8 @@ export class ScheduleService implements OnInit{
     if(this.idMap.has(id)){
       this.server.updateRecordTime(<number>this.idMap.get(id), time)
       .pipe(
-        catchError(() => {
+        catchError((err) => {
+          this.logger.err(err)
           this.message.warning("Connection error.");
           return of();
         })
@@ -93,7 +98,8 @@ export class ScheduleService implements OnInit{
     if(id > 0){
       this.server.updateRecordText(id, text)
       .pipe(
-        catchError(() => {
+        catchError((err) => {
+          this.logger.err(err)
           this.message.warning("Can't update record because of connection error.");
           return of()
         }),
@@ -107,7 +113,8 @@ export class ScheduleService implements OnInit{
 
     return this.server.postRecord(this.selectedDate, time, text)
       .pipe(
-        catchError( () => {
+        catchError( (err) => {
+          this.logger.err(err)
           this.message.warning("Can't save record because of connection error.");
           // Just complete
           return of<number>()
@@ -131,7 +138,8 @@ export class ScheduleService implements OnInit{
 
     this.server.deleteRecord(id)
     .pipe(
-      catchError(() => {
+      catchError((err) => {
+        this.logger.err(err);
         this.message.warning("Connection error.");
         return of()
       }),
