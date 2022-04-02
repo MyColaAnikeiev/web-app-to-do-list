@@ -2,8 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { RecordStateModelI } from 'src/app/share/interfaces/schedule.interfaces';
 import { ScheduleService } from 'src/app/share/services/schedule.service';
-import { debounce, delay, delayWhen, takeUntil, tap } from 'rxjs/operators'
-import { interval, merge, of, Subject, timer } from 'rxjs';
+import { debounce, takeUntil, tap } from 'rxjs/operators'
+import { interval, merge, Subject, timer } from 'rxjs';
 import { RecordTime } from 'src/app/share/lib/record-time';
 import { ShafleAnimatonBindingService } from 'src/app/share/services/shafle-animation-binding.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
